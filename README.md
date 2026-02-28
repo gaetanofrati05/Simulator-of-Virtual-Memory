@@ -25,7 +25,7 @@ There are fuor functions:
 
 -int handlePageFault(int pages): it handles the page fault when occurs with a random access to a file named BACKING_STORE.bin searching the page assigning to the correct frame.
 
--int TLB_support(int page): it is a support memory for return immediatly the frame if there is not return -1
+-int TLB_lookup(int page): it is a support memory for return immediatly the frame if there is not return -1
 
  -void insertTLB(int frame, int page): it inserts the frame and page in the TLB and when it is full replaces with a FIFO parameter.
 
