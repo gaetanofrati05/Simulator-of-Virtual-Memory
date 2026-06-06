@@ -1,33 +1,106 @@
-# Simulator-of-Virtual-Memory
-This mini project is a simulator of virtual memory written in ANSII C language. There is a file, addresses.txt, contains number of virtual page and, with support of TLB , links frame in memory eventually computes  physics address in memory.
+<h1>🧠 Simulator of Virtual Memory</h1>
 
-There are some assumptions I have done for the project let me explain. 
+<p>
+  This is a mini-simulator of a <strong>Virtual Memory Management Unit (MMU)</strong> written in <strong>ANSI C</strong>. 
+  The program reads logical addresses from a file (<code>addresses.txt</code>), translates them into physical addresses 
+  using a <strong>TLB (Translation Lookaside Buffer)</strong> and a <strong>Page Table</strong>, and handles page faults 
+  by fetching data from a simulated disk (<code>BACKING_STORE.bin</code>).
+</p>
 
-1)The size of virtual memory is 2^16=65536 byte
+---
 
-2)16 elements in TLB
+<h2>📊 System Specifications & Assumptions</h2>
 
-3)256 frame
+<p>The simulator operates under the following architectural constraints and parameters:</p>
 
-4)2^8 elements in page table
+<table>
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Value / Size</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Virtual Memory Size</strong></td>
+      <td>2<sup>16</sup> = 65,536 Bytes</td>
+      <td>Total logical address space.</td>
+    </tr>
+    <tr>
+      <td><strong>Physical Memory Size</strong></td>
+      <td>2<sup>16</sup> = 65,536 Bytes</td>
+      <td>Total physical address space (256 frames × 256 bytes).</td>
+    </tr>
+    <tr>
+      <td><strong>Page / Frame Size</strong></td>
+      <td>2<sup>8</sup> = 256 Bytes</td>
+      <td>Size of both virtual pages and physical frames.</td>
+    </tr>
+    <tr>
+      <td><strong>Page Table Entries</strong></td>
+      <td>2<sup>8</sup> = 256 Entries</td>
+      <td>Maps virtual pages to physical frames.</td>
+    </tr>
+    <tr>
+      <td><strong>TLB Size</strong></td>
+      <td>16 Entries</td>
+      <td>High-speed cache for faster address translation.</td>
+    </tr>
+    <tr>
+      <td><strong>TLB Replacement Policy</strong></td>
+      <td>FIFO (First-In, First-Out)</td>
+      <td>Algorithm used to evict entries when the TLB is full.</td>
+    </tr>
+  </tbody>
+</table>
 
-5)The size of page and frame is 2^8 byte
+<blockquote>
+  ℹ️ <strong>Note on Page Replacement:</strong> Since the Physical Memory and Virtual Memory sizes are equal in this simulation, 
+  frames will never run out. Therefore, a page replacement algorithm (like LRU or FIFO for frames) is not required when a page fault occurs. 
+  The program currently supports <strong>read-only</strong> address translation operations.
+</blockquote>
 
-6)Physics Memory is 65356 byte(256 page x 256 frame)
+---
 
-7)The program support only the reading of translation of virtual address in physics address
+<h2>🛠️ Core Functions & API Reference</h2>
 
-8)The size of physics memory and virtual memory are the same therefore it's not necessary the substitution of page when occurs a page fault.
+<p>The core logic of the simulator is divided into four main functions:</p>
 
-There are fuor functions:
+<ul>
+  <li>
+    <code>void changeaddress()</code>
+    <br />
+    Reads 32-bit logical addresses from <code>addresses.txt</code>, extracts the 16 least significant bits, and splits them into:
+    <ul>
+      <li><strong>Page Number:</strong> The upper 8 bits.</li>
+      <li><strong>Offset:</strong> The lower 8 bits.</li>
+    </ul>
+  </li>
+  <li>
+    <code>int handlePageFault(int page)</code>
+    <br />
+    Triggered when a page is not found in the Page Table. It performs a random access read from <code>BACKING_STORE.bin</code>, 
+    loads the required page into physical memory, and maps it to the correct frame.
+  </li>
+  <li>
+    <code>int TLB_lookup(int page)</code>
+    <br />
+    Checks if the virtual page is cached in the TLB. Returns the corresponding <code>frame number</code> if a TLB Hit occurs; 
+    returns <code>-1</code> if there is a TLB Miss.
+  </li>
+  <li>
+    <code>void insertTLB(int page, int frame)</code>
+    <br />
+    Inserts a new page-to-frame mapping into the TLB. If the TLB is full, it automatically replaces the oldest entry using the <strong>FIFO</strong> strategy.
+  </li>
+</ul>
 
--void changeaddress(): it changes the virtual address in physics address since the number in file addresses.txt are in 32 bit it takes only the least significant bits and they are divided into two parts: the first 8 bits are the number of page the remaining the offset.
+---
 
--int handlePageFault(int pages): it handles the page fault when occurs with a random access to a file named BACKING_STORE.bin searching the page assigning to the correct frame.
+<h2>🤝 Contributing & Support</h2>
 
--int TLB_lookup(int page): it is a support memory for return immediatly the frame if there is not return -1
-
- -void insertTLB(int frame, int page): it inserts the frame and page in the TLB and when it is full replaces with a FIFO parameter.
-
-I'm the owner of the project and the only one that have worked for if you want to support me and gives me some advices you're welcome and I appreciate.
-I'll post some others projects in the future stay soon!
+<p>
+  I am the sole creator and maintainer of this project. If you find this simulation helpful, want to give me some advice, 
+  or wish to implement improvements (such as adding a page replacement policy for smaller physical memory sizes), 
+  <strong>your feedback and
